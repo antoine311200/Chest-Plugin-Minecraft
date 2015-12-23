@@ -54,3 +54,8 @@ chest size:
   usage: /chest size <min> <max>
   default: op
 ```
+
+
+Copyright © 2015 Oblask Studios
+
+Created by Debouchage Antoine (Nattack) for [Superpowers HTML5 Game Engine](https://sparklinlabs.com/)
