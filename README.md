@@ -58,4 +58,4 @@ chest size:
 
 Copyright © 2015 Oblask Studios
 
-Created by Debouchage Antoine (Nattack) for [Superpowers HTML5 Game Engine](https://sparklinlabs.com/)
+Created by Debouchage Antoine (Nattack) for [Minecraft](https://minecraft.net/)
