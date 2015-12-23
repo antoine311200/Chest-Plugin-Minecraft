@@ -82,7 +82,10 @@ public class PlugListener implements Listener {
 					if(items.length > 2) {
 						for(int z = 2; z < items.length; z++) {
 							List<String> enchant = Arrays.asList(items[z].split(","));
-							loot.get(i).get(j).addEnchantment(Enchantment.getByName(enchant.get(0)), Integer.parseInt(enchant.get(1)));
+							loot.get(i).get(j).addEnchantment(
+								Enchantment.getByName(enchant.get(0)), 
+								Integer.parseInt(enchant.get(1))
+							);
 						}
 					}
 				}
@@ -98,14 +101,22 @@ public class PlugListener implements Listener {
 			this.lastChestPos.setY(loc.getY()+5);
 			this.lastChestPos.setZ(loc.getZ());
 			
-		    plugin.getServer().broadcastMessage(ChatColor.RED + p.getName()+ ChatColor.AQUA + " a fait spawn un coffre bonus en :");
+		    plugin.getServer().broadcastMessage(
+		    	ChatColor.RED + p.getName() + 
+		    	ChatColor.AQUA + " a fait spawn un coffre bonus en :"
+		    );
 		    plugin.getServer().broadcastMessage(ChatColor.GREEN + "X = " + ChatColor.BLUE + loc.getX());
 		    plugin.getServer().broadcastMessage(ChatColor.GREEN + "Y = " + ChatColor.BLUE + loc.getY());
 		    plugin.getServer().broadcastMessage(ChatColor.GREEN + "Z = " + ChatColor.BLUE + loc.getZ());
 		}
 		else if(params[0].equalsIgnoreCase("/chest") && params[1].equalsIgnoreCase("start")) {
 			if(p.isOp()) {
-				plugin.getServer().broadcastMessage(ChatColor.GREEN +"La génération des "+ ChatColor.GOLD + "coffres Bonus "+ ChatColor.GREEN + "a été démarrée par "+ ChatColor.RED + p.getName());
+				plugin.getServer().broadcastMessage(
+					ChatColor.GREEN +"La génération des "+ 
+					ChatColor.GOLD + "coffres Bonus "+ 
+					ChatColor.GREEN + "a été démarrée par "+ 
+					ChatColor.RED + p.getName()
+				);
 				time = 0;
 				timer();
 			}
@@ -117,7 +128,12 @@ public class PlugListener implements Listener {
 			if(p.isOp()) {
 				time = 0;
 				plugin.getServer().getScheduler().cancelTask(task);
-				plugin.getServer().broadcastMessage(ChatColor.GREEN +"La génération des "+ ChatColor.GOLD + "coffres Bonus "+ ChatColor.GREEN + "a été arrêtée par "+ ChatColor.RED + p.getName());
+				plugin.getServer().broadcastMessage(
+					ChatColor.GREEN +"La génération des "+ 
+					ChatColor.GOLD + "coffres Bonus "+ 
+					ChatColor.GREEN + "a été arrêtée par "+ 
+					ChatColor.RED + p.getName()
+				);
 			}
 			else {
 				p.sendMessage(ChatColor.RED +"Il faut être Admin pour faire cette commande.");
@@ -137,7 +153,13 @@ public class PlugListener implements Listener {
 				plugin.getConfig().set("time", this.maxTime);
 				plugin.saveConfig();
 				
-				plugin.getServer().broadcastMessage(ChatColor.GREEN +"Le temps entre la génération des "+ ChatColor.GOLD + "coffres Bonus "+ ChatColor.GREEN + "a été changé à "+ ChatColor.BLUE + this.maxTime + ChatColor.GREEN + " par "+ ChatColor.RED + p.getName());
+				plugin.getServer().broadcastMessage(
+					ChatColor.GREEN +"Le temps entre la génération des "+ 
+					ChatColor.GOLD + "coffres Bonus "+ 
+					ChatColor.GREEN + "a été changé à "+ 
+					ChatColor.BLUE + this.maxTime + 
+					ChatColor.GREEN + " par "+ ChatColor.RED + p.getName()
+				);
 			}
 			else {
 				p.sendMessage(ChatColor.RED +"Il faut être Admin pour faire cette commande.");
@@ -152,7 +174,14 @@ public class PlugListener implements Listener {
 				plugin.getConfig().set("maps-min", this.min);
 				plugin.saveConfig();
 				
-				plugin.getServer().broadcastMessage(ChatColor.GREEN +"La taille de la zone de génération des "+ ChatColor.GOLD + "coffres Bonus "+ ChatColor.GREEN + "a été changée à "+ChatColor.BLUE+"[ "+this.min+", "+this.max+" ]"+ ChatColor.GREEN + " par "+ ChatColor.RED + p.getName());
+				plugin.getServer().broadcastMessage(
+					ChatColor.GREEN +"La taille de la zone de génération des "+ 
+					ChatColor.GOLD + "coffres Bonus "+ 
+					ChatColor.GREEN + "a été changée à "+
+					ChatColor.BLUE+"[ "+this.min+", "+this.max+" ]"+ 
+					ChatColor.GREEN + " par "+ 
+					ChatColor.RED + p.getName()
+				);
 			}
 			else {
 				p.sendMessage(ChatColor.RED +"Il faut être Admin pour faire cette commande.");
@@ -185,7 +214,11 @@ public class PlugListener implements Listener {
 				
 			}
 			else if (time == maxTime-11) {
-				plugin.getServer().broadcastMessage(ChatColor.GREEN + "Un" + ChatColor.GOLD + " coffre Bonus "+ ChatColor.GREEN + "va apparaître dans " + (maxTime-time));
+				plugin.getServer().broadcastMessage(
+					ChatColor.GREEN + "Un" + 
+					ChatColor.GOLD + " coffre Bonus "+ 
+					ChatColor.GREEN + "va apparaître dans " + (maxTime-time)
+				);
 			}
 			
 			else {
@@ -194,9 +227,9 @@ public class PlugListener implements Listener {
 				plugin.getServer().getWorld("world").createExplosion(randX, loc.getWorld().getHighestBlockYAt(randX, randZ), randZ, 4F, false, true);
 				
 				Block b = loc.getBlock();
-			    b.setType(Material.CHEST);
-			    Chest chest = (Chest) b.getState();
-
+				b.setType(Material.CHEST);
+				Chest chest = (Chest) b.getState();
+				
 				int randItem = (int) (Math.random()*(10-1));
 				int nbKit = (int) plugin.getConfig().get("kit-number");
 				
@@ -213,13 +246,19 @@ public class PlugListener implements Listener {
 						if(items[1] == "rand10") {
 							items[1] = Integer.toString(randItem);
 						}
-						loot.get(i).add(new ItemStack(Material.getMaterial(items[0]), Integer.parseInt(items[1])));
+						loot.get(i).add(
+							new ItemStack(Material.getMaterial(items[0]), 
+							Integer.parseInt(items[1]))
+						);
 						if(items.length > 2) {
 							for(int z = 2; z < items.length; z++) {
 								List<String> enchant = Arrays.asList(items[z].split(","));
 								//System.out.println(enchant.toString());
 								
-								loot.get(i).get(j).addEnchantment(Enchantment.getByName(enchant.get(0)), Integer.parseInt(enchant.get(1)));
+								loot.get(i).get(j).addEnchantment(
+									Enchantment.getByName(enchant.get(0)), 
+									Integer.parseInt(enchant.get(1))
+								);
 							}
 						}
 					}
@@ -235,7 +274,11 @@ public class PlugListener implements Listener {
 				lastChestPos.setY(loc.getY()+5);
 				lastChestPos.setZ(loc.getZ());
 
-			    plugin.getServer().broadcastMessage(ChatColor.GREEN + "Un" + ChatColor.GOLD + " coffre Bonus "+ ChatColor.GREEN + "est apparu en :");
+			    plugin.getServer().broadcastMessage(
+			    	ChatColor.GREEN + "Un" + 
+			    	ChatColor.GOLD + " coffre Bonus "+ 
+			    	ChatColor.GREEN + "est apparu en :"
+			    );
 			    plugin.getServer().broadcastMessage(ChatColor.RED + "X = " + ChatColor.BLUE + loc.getX());
 			    plugin.getServer().broadcastMessage(ChatColor.RED + "Y = " + ChatColor.BLUE + loc.getY());
 			    plugin.getServer().broadcastMessage(ChatColor.RED + "Z = " + ChatColor.BLUE + loc.getZ());
