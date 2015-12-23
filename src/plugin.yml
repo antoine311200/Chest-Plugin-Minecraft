@@ -1,0 +1,21 @@
+name: NonoPlugin
+main: net.nattack.plug.Plugin
+author: nattack
+version: 1.0.0
+commands:
+  chest start:
+    description: This is a command in order to start the generation of the random chest.
+    usage: /chest start
+    default: op
+  chest stop:
+    description: This is a command in order to stop the generation of the random chest.
+    usage: /chest stop
+    default: op
+  chest tp:
+    description: Teleport the player at the chest location.
+    usage: /chest tp
+    default: op
+  chest time:
+    description: Set the time between each chest generation (in second)
+    usage: /chest time <time>
+    default: op
