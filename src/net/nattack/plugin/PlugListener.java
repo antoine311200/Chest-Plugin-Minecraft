@@ -33,6 +33,7 @@ public class PlugListener implements Listener {
 	public PlugListener(Plugin plugin) {
 		this.plugin = plugin;
 		this.lastChestPos = new Location(plugin.getServer().getWorld("world"), 0, 80, 0);
+
 		this.maxTime = (int) plugin.getConfig().get("time");
 		this.max = (int) plugin.getConfig().get("maps-max");
 		this.min = (int) plugin.getConfig().get("maps-min");
@@ -161,86 +162,85 @@ public class PlugListener implements Listener {
 	
 	@SuppressWarnings("deprecation")
 	public void timer() {
-		task = plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(plugin, new Runnable() {
+	task = plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(plugin, new Runnable() {
 
-			@Override
-			public void run() {
-				
-				Location loc = new Location(plugin.getServer().getWorld("world"), 0, 0, 0);
+		@Override
+		public void run() {
+			
+			Location loc = new Location(plugin.getServer().getWorld("world"), 0, 0, 0);
 
-				int max = (int) plugin.getConfig().get("maps-max");
-				int min = (int) plugin.getConfig().get("maps-min");
+			int max = (int) plugin.getConfig().get("maps-max");
+			int min = (int) plugin.getConfig().get("maps-min");
+			
+			int randX = (int) (Math.floor(Math.random() * max) + min);
+			int randZ = (int) (Math.floor(Math.random() * max) + min);
+			
+		    loc.setX(randX);
+		    loc.setY(loc.getWorld().getHighestBlockYAt(randX, randZ));
+		    loc.setZ(randZ);
+		    
+			
+			if(time < maxTime) {
+				time = time + 1;
 				
-				int randX = (int) (Math.floor(Math.random() * max) + min);
-				int randZ = (int) (Math.floor(Math.random() * max) + min);
+			}
+			else if (time == maxTime-11) {
+				plugin.getServer().broadcastMessage(ChatColor.GREEN + "Un" + ChatColor.GOLD + " coffre Bonus "+ ChatColor.GREEN + "va apparaître dans " + (maxTime-time));
+			}
+			
+			else {
+				time = 0;
 				
-			    loc.setX(randX);
-			    loc.setY(loc.getWorld().getHighestBlockYAt(randX, randZ));
-			    loc.setZ(randZ);
-			    
+				plugin.getServer().getWorld("world").createExplosion(randX, loc.getWorld().getHighestBlockYAt(randX, randZ), randZ, 4F, false, true);
 				
-				if(time < maxTime) {
-					time = time + 1;
-					
-				}
-				else if (time == maxTime-11) {
-					plugin.getServer().broadcastMessage(ChatColor.GREEN + "Un" + ChatColor.GOLD + " coffre Bonus "+ ChatColor.GREEN + "va apparaître dans " + (maxTime-time));
-				}
-				
-				else {
-					time = 0;
-					
-					plugin.getServer().getWorld("world").createExplosion(randX, loc.getWorld().getHighestBlockYAt(randX, randZ), randZ, 4F, false, true);
-					
-					Block b = loc.getBlock();
-				    b.setType(Material.CHEST);
-				    Chest chest = (Chest) b.getState();
+				Block b = loc.getBlock();
+			    b.setType(Material.CHEST);
+			    Chest chest = (Chest) b.getState();
 
-					int randItem = (int) (Math.random()*(10-1));
-					int nbKit = (int) plugin.getConfig().get("kit-number");
-					
-					List<List<ItemStack>> loot = new ArrayList<List<ItemStack>>();
+				int randItem = (int) (Math.random()*(10-1));
+				int nbKit = (int) plugin.getConfig().get("kit-number");
+				
+				List<List<ItemStack>> loot = new ArrayList<List<ItemStack>>();
 
-					for(int i = 0; i < nbKit; i++) {
-						loot.add(new ArrayList<ItemStack>());
-						int kit = i+1;
-						List<String> elem = plugin.getConfig().getStringList("chests.kit"+Integer.toString(kit));
+				for(int i = 0; i < nbKit; i++) {
+					loot.add(new ArrayList<ItemStack>());
+					int kit = i+1;
+					List<String> elem = plugin.getConfig().getStringList("chests.kit"+Integer.toString(kit));
+					
+					for(int j = 0; j < elem.size(); j++) {
+						String[] items = elem.get(j).split(" ");
 						
-						for(int j = 0; j < elem.size(); j++) {
-							String[] items = elem.get(j).split(" ");
-							
-							if(items[1] == "rand10") {
-								items[1] = Integer.toString(randItem);
-							}
-							loot.get(i).add(new ItemStack(Material.getMaterial(items[0]), Integer.parseInt(items[1])));
-							if(items.length > 2) {
-								for(int z = 2; z < items.length; z++) {
-									List<String> enchant = Arrays.asList(items[z].split(","));
-									//System.out.println(enchant.toString());
-									
-									loot.get(i).get(j).addEnchantment(Enchantment.getByName(enchant.get(0)), Integer.parseInt(enchant.get(1)));
-								}
+						if(items[1] == "rand10") {
+							items[1] = Integer.toString(randItem);
+						}
+						loot.get(i).add(new ItemStack(Material.getMaterial(items[0]), Integer.parseInt(items[1])));
+						if(items.length > 2) {
+							for(int z = 2; z < items.length; z++) {
+								List<String> enchant = Arrays.asList(items[z].split(","));
+								//System.out.println(enchant.toString());
+								
+								loot.get(i).get(j).addEnchantment(Enchantment.getByName(enchant.get(0)), Integer.parseInt(enchant.get(1)));
 							}
 						}
 					}
-
-					int randKit = (int)(Math.random() * (nbKit));
-					
-					for(int i = 0; i < loot.get(randKit).size(); i++) {
-						chest.getInventory().addItem(loot.get(randKit).get(i));
-					}
-					
-					lastChestPos.setX(loc.getX());
-					lastChestPos.setY(loc.getY()+5);
-					lastChestPos.setZ(loc.getZ());
-
-				    plugin.getServer().broadcastMessage(ChatColor.GREEN + "Un" + ChatColor.GOLD + " coffre Bonus "+ ChatColor.GREEN + "est apparu en :");
-				    plugin.getServer().broadcastMessage(ChatColor.RED + "X = " + ChatColor.BLUE + loc.getX());
-				    plugin.getServer().broadcastMessage(ChatColor.RED + "Y = " + ChatColor.BLUE + loc.getY());
-				    plugin.getServer().broadcastMessage(ChatColor.RED + "Z = " + ChatColor.BLUE + loc.getZ());
 				}
+
+				int randKit = (int)(Math.random() * (nbKit));
+				
+				for(int i = 0; i < loot.get(randKit).size(); i++) {
+					chest.getInventory().addItem(loot.get(randKit).get(i));
+				}
+				
+				lastChestPos.setX(loc.getX());
+				lastChestPos.setY(loc.getY()+5);
+				lastChestPos.setZ(loc.getZ());
+
+			    plugin.getServer().broadcastMessage(ChatColor.GREEN + "Un" + ChatColor.GOLD + " coffre Bonus "+ ChatColor.GREEN + "est apparu en :");
+			    plugin.getServer().broadcastMessage(ChatColor.RED + "X = " + ChatColor.BLUE + loc.getX());
+			    plugin.getServer().broadcastMessage(ChatColor.RED + "Y = " + ChatColor.BLUE + loc.getY());
+			    plugin.getServer().broadcastMessage(ChatColor.RED + "Z = " + ChatColor.BLUE + loc.getZ());
 			}
-			
-		}, 0L,20L);
+		}
+	}, 0L,20L);
 	}
 }
